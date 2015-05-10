@@ -3,36 +3,34 @@ import java.util.ArrayList;
 public class DataMemory {
 	private boolean memRead;
 	private boolean memWrite;
-	private String address;
-	private String writeData;
-	private String result;
-	private ArrayList<String> data;
-
-	public void setAddress(String address) {
-		this.address = address;
+	private boolean[] address;
+	private boolean[] writeData;
+	private boolean[] readData;
+	private boolean[][] data;
+	
+	DataMemory() {
+		data = new boolean[(int) Math.pow(32, 2)][32];
+		address = new boolean[32];
+		writeData = new boolean[32];
+		readData = new boolean[32];
 	}
-
-	public void setWriteData(String writeData) {
-		this.writeData = writeData;
+	
+	public void getData() {
+		int index = ALU.binaryArrayToInt(address);
+		readData = data[index];
 	}
-
-	public void setMemRead(boolean memRead) {
-		this.memRead = memRead;
+	
+	public void setData() {
+		int index = ALU.binaryArrayToInt(address);
+		data[index] = writeData;
 	}
-
-	public void setMemWrite(boolean memWrite) {
-		this.memWrite = memWrite;
+	
+	public void memoryAccess() {
+		if(memRead && ! memWrite) {
+			getData();
+		}
+		else if(memWrite && ! memRead) {
+			setData();
+		}
 	}
-
-	void addDataToMemory() {
-		if (!memRead && memWrite)
-			data.add(Integer.parseInt(address), writeData);
-	}
-
-	String getDataFromMemory() {
-		if (memRead && !memWrite)
-			result = data.get(Integer.parseInt(address));
-		return result;
-	}
-
 }

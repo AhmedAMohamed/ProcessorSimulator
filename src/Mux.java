@@ -1,23 +1,48 @@
 public class Mux {
-	String s1;
-	String s2;
-	String result;
+	boolean[] a;
+	boolean[] b;
+	boolean[] result;
+	boolean s;
 
-	public void setS1(String s1) {
-		this.s1 = s1;
+	Mux() {
+		a = new boolean[32];
+		b = new boolean[32];
+		result = new boolean[32];
 	}
 
-	public void setS2(String s2) {
-		this.s2 = s2;
+	public boolean[] getA() {
+		return a;
 	}
 
-	public String getResult(Boolean select) {
-		if (select) {
-			result = s2;
-		} else {
-			result = s1;
-		}
+	public void setA(boolean[] a) {
+		this.a = a;
+	}
+
+	public boolean[] getB() {
+		return b;
+	}
+
+	public void setB(boolean[] b) {
+		this.b = b;
+	}
+
+	public boolean[] getResult() {
 		return result;
 	}
 
+	public void setResult(boolean[] result) {
+		this.result = result;
+	}
+
+	public boolean isS() {
+		return s;
+	}
+
+	public void setS(boolean s) {
+		this.s = s;
+	}
+	
+	public void operateMux() {
+		result = s ? b : a;
+	}
 }

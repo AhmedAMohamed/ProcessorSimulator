@@ -1,4 +1,4 @@
-
+/*
 public class Processor {
 
 	public int pcCounter;
@@ -36,6 +36,8 @@ public class Processor {
 	private void decode(String instruction) {
 		String[] s = instruction.split(" ");
 		//op + rd + rs + rt
+		System.out.println(s[0]);
+		controlUnit.aluOp = s[0];
 		controlUnit.select(s[0]);
 		registerfiles.setReadD1(s[2]);
 		registerfiles.setReadD2(s[3]);
@@ -43,8 +45,8 @@ public class Processor {
 		registerfilemux.setS2(s[1]);
 		registerfiles.setWriteReg(registerfilemux.getResult(controlUnit.regDes));
 		
-		nextshift=Integer.parseInt(s[3]);
-		signextend=s[3];
+	//	nextshift=Integer.parseInt(s[3]);
+	//	signextend=s[3];
 	}
 	
 	private String fetch() {
@@ -61,4 +63,13 @@ public class Processor {
 		aluresult=alu.getResult();
 	}
 	
-}
+	public static void main(String[] args) {
+		Processor s = new Processor();
+		s.pcCounter = 0;
+		s.instructionmemory.setInstruction("add t1 t2 t3");
+		s.cycle();
+		String s = Integer.toBinaryString(-3);
+		System.out.println(s);
+		System.out.println(s.charAt(32-2));
+	}
+}*/

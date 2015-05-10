@@ -1,18 +1,15 @@
 import java.util.ArrayList;
 
 public class InstructionMemory {
-    ArrayList<String> instructions;
+    ArrayList<boolean[]> instructions;
     public InstructionMemory(){
-        instructions = new ArrayList<String>();
-        for(int i = 0; i < 512; i++) {
-            instructions.add(new String());
-        }
+        instructions = new ArrayList<boolean[]>();
     }
-    public void setInstruction(String instruction) {
+    public void setInstruction(boolean[] instruction) {
         this.instructions.add(instruction);
         //instruction.split(" ") 
     }
-    public String getInstruction(int index) {
+    public boolean[] getInstruction(int index) {
         return instructions.get(index);
     }
 }
