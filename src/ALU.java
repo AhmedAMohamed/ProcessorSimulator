@@ -34,8 +34,15 @@ public class ALU {
 		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // nor
 			nor();
 		}
-		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // lw
+		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // lw  && sw
 			add();
+		}
+		else if(aluControl[0] && aluControl[1] && aluControl[2] && aluControl[3]) { // bne
+			sub();
+			zero = !zero;
+		}
+		else if(!aluControl[0] && aluControl[1] && aluControl[2] && !aluControl[3]) { // beq
+			sub();
 		}
 	}
 	

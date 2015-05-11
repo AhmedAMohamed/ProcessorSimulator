@@ -248,7 +248,7 @@ public class Assembler {
 				String opcode, rs, rt, address;
 				rs = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[2])).replace(' ', '0'));
 				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1])).replace(' ', '0'));;
-				address = String.format("%16s", Integer.toBinaryString(registerMaper.get(parts[3])).replace(' ', '0'));
+				address = String.format("%16s", Integer.toBinaryString(Integer.parseInt(parts[3]))).replace(' ', '0');
 				opcode = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
 				for(int i = 0; i < 6; i++) {
 					instruction[i] = opcode.charAt(i) == '1' ? true : false;
@@ -369,12 +369,18 @@ public class Assembler {
 	}
 	public static void main(String[] args) {
 		Assembler s = new Assembler();
-		s.addInstructions("");
+		s.addInstructions("add $zero $zero $zero");
 		s.assemblyGenerator();
 		Processor mips = new Processor();
 		for(int i=0; i<s.instructions.size();i++) {
 			mips.instructionmemory.setInstruction(s.instructions.get(i));
 		}
 		mips.mipsoperator();
+		for(int i = 0; i < 32; i++) {
+			for(int j = 0; j < 32; j++) {
+				System.out.print(mips.registerfiles.registers[i][j]? '1' : '0');
+			}
+			System.out.println();
+		}
 	}
 }

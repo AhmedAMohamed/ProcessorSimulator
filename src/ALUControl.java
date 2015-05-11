@@ -75,7 +75,41 @@ public class ALUControl {
 				result[3]=true;
 			}
 		}
-			
+		else if(!AluOp[0] && !AluOp[1] && AluOp[2]) { // beq
+			result[0]=false;
+			result[1]=true;
+			result[2]=true;
+			result[3]=false;
+		}
+		else if(AluOp[0] && !AluOp[1] && !AluOp[2]) { // addi
+			result[0]=false;
+			result[1]=false;
+			result[2]=true;
+			result[3]=false;
+		}
+		else if(AluOp[0] && AluOp[1] && !AluOp[2]) { // bne  
+			result[0]=true;
+			result[1]=true;
+			result[2]=true;
+			result[3]=true;
+		}
+		else if(!AluOp[0] && !AluOp[1] && !AluOp[2]) { // lw  
+			result[0] = true;
+			result[1] = true;
+			result[2] = false;
+			result[3] = false;
+		}
+		else if(!AluOp[0] && !AluOp[1] && !AluOp[2]) { // sw  
+			result[0] = true;
+			result[1] = true;
+			result[2] = false;
+			result[3] = false;
+		}
+		else if(AluOp[0] && AluOp[1] && AluOp[2]) { // slti  
+			result[0]=false;
+			result[1]=true;
+			result[2]=true;
+			result[3]=true;
+		}
 	}
-	
 }
