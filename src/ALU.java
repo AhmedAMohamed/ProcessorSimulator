@@ -22,17 +22,30 @@ public class ALU {
 		else if(!aluControl[0] && !aluControl[1] && aluControl[2] && !aluControl[3]) { // add
 			add();
 		}
-		else if(!aluControl[0] && aluControl[1] && aluControl[2] && !aluControl[3]) { // add
+		else if(!aluControl[0] && aluControl[1] && aluControl[2] && !aluControl[3]) { // sub
 			sub();
 		}
-		else if(!aluControl[0] && aluControl[1] && aluControl[2] && aluControl[3]) { // add
+		else if(!aluControl[0] && aluControl[1] && aluControl[2] && aluControl[3]) { // slt
 			slt();
 		}
-		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // add
+		else if(!aluControl[0] && aluControl[1] && !aluControl[2] && aluControl[3]) { // sll
+			sll();
+		}
+		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // nor
 			nor();
+		}
+		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // lw
+			add();
 		}
 	}
 	
+	private void sll() {
+		int in1 = binaryArrayToInt(data1);
+		int in2 = binaryArrayToInt(data2);
+		int res = (int) (in1*Math.pow(2, in2));
+		result = intToBooleanArray(res);
+	}
+
 	private void nor() {
 		
 	}

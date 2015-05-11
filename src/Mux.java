@@ -3,11 +3,13 @@ public class Mux {
 	boolean[] b;
 	boolean[] result;
 	boolean s;
+	int size;
 
-	Mux() {
-		a = new boolean[32];
-		b = new boolean[32];
-		result = new boolean[32];
+	Mux(int size) {
+		a = new boolean[size];
+		b = new boolean[size];
+		result = new boolean[size];
+		this.size = size;
 	}
 
 	public boolean[] getA() {

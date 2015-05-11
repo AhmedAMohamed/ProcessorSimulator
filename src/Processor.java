@@ -1,6 +1,4 @@
-/*
 public class Processor {
-
 	public int pcCounter;
 	Control controlUnit;
 	ALU alu;
@@ -11,65 +9,156 @@ public class Processor {
 	ALU branchadder;
 	Mux registerfilemux;
 	Mux datamemorymux;
-	int nextshift;
-	String signextend;
-	String aluresult;
-	
-	Processor() {
-		controlUnit=new Control();
-		alu=new ALU();
-		datamemory=new DataMemory();
-		instructionmemory=new InstructionMemory();
-		alumux=new Mux();
-		registerfiles= new RegisterFiles();
-		branchadder=new ALU();
-		registerfilemux=new Mux();
-		datamemorymux=new Mux();
-	}
-	
-	void cycle() {
-		String instruction=fetch();
-		decode(instruction); 
-		
+	ALUControl alucontrol;
+	SignExtenssion signextenssion;
+	Mux addermux;
+	Adder adder;
+	AND and;
+	Adder pcadder;
+
+	boolean[] opcode;
+	boolean[] rs;
+	boolean[] rt;
+	boolean[] rd;
+	boolean[] funct;
+	boolean[] shamt;
+	boolean[] address;
+
+	public Processor() {
+		controlUnit = new Control();
+		alu = new ALU();
+		datamemory = new DataMemory();
+		instructionmemory = new InstructionMemory();
+		alumux = new Mux(32);
+		registerfiles = new RegisterFiles();
+		branchadder = new ALU();
+		registerfilemux = new Mux(5);
+		datamemorymux = new Mux(32);
+		alucontrol = new ALUControl();
+		signextenssion = new SignExtenssion();
+		addermux = new Mux(32);
+		adder = new Adder();
+		and = new AND();
+		pcadder = new Adder();
+
+		opcode = new boolean[6];
+		rs = new boolean[5];
+		rt = new boolean[5];
+		rd = new boolean[5];
+		funct = new boolean[6];
+		shamt = new boolean[5];
+		address = new boolean[16];
 	}
 
-	private void decode(String instruction) {
-		String[] s = instruction.split(" ");
-		//op + rd + rs + rt
-		System.out.println(s[0]);
-		controlUnit.aluOp = s[0];
-		controlUnit.select(s[0]);
-		registerfiles.setReadD1(s[2]);
-		registerfiles.setReadD2(s[3]);
-		registerfilemux.setS1(s[2]);
-		registerfilemux.setS2(s[1]);
-		registerfiles.setWriteReg(registerfilemux.getResult(controlUnit.regDes));
-		
-	//	nextshift=Integer.parseInt(s[3]);
-	//	signextend=s[3];
+	void cycle() {
+		boolean[] instruction = fetch();
+		decode(instruction);
+		execute();
+		memoryaccess();
+		writeback();
 	}
-	
-	private String fetch() {
+
+	private void writeback() {
+		pcadder.i1 = ALU.intToBooleanArray(pcCounter);
+		pcadder.i2 = ALU.intToBooleanArray(1);
+		pcadder.operate();
+
+		adder.i1 = pcadder.result;
+		adder.i2 = signextenssion.output;
+		adder.operate();
+
+		and.in1 = controlUnit.branch;
+		and.in2 = alu.zero;
+		and.operate();
+
+		addermux.a = pcadder.result;
+		addermux.b = adder.result;
+		addermux.s = and.result;
+		addermux.operateMux();
+
+		pcCounter = ALU.binaryArrayToInt(addermux.result);
+	}
+
+	private void memoryaccess() {
+		datamemory.address = alu.result;
+		datamemory.writeData = registerfiles.readData2;
+		datamemory.memWrite = controlUnit.memWrite;
+		datamemory.memRead = controlUnit.memRead;
+		datamemory.memoryAccess();
+
+		datamemorymux.setB(datamemory.readData);
+		datamemorymux.setA(alu.result);
+		datamemorymux.operateMux();
+
+		registerfiles.writeData = datamemorymux.result;
+		registerfiles.updateWriteOperation();
+	}
+
+	private void execute() {
+		controlUnit.setAluOp(opcode);
+		controlUnit.operate();
+
+		registerfilemux.setA(rt);
+		registerfilemux.setB(rd);
+		registerfilemux.setS(controlUnit.regDest);
+		registerfilemux.operateMux();
+
+		registerfiles.setReadData1(rs);
+		registerfiles.setReadData2(rt);
+		registerfiles.setWriteRegister(registerfilemux.getResult());
+		registerfiles.setRegWrite(controlUnit.regWrite);
+		registerfiles.operate();
+
+		signextenssion.input = address;
+		signextenssion.extend();
+
+		alumux.setA(registerfiles.readData2);
+		alumux.setB(signextenssion.output);
+		alumux.setS(controlUnit.aluSrc);
+		alumux.operateMux();
+
+		alucontrol.setAluOp(controlUnit.aluOp);
+		alucontrol.setFunct(funct);
+		alucontrol.operate();
+
+		alu.setData1(registerfiles.readData1);
+		alu.setData2(alumux.result);
+		alu.setAluControl(alucontrol.getResult());
+		alu.calculate();
+	}
+
+	private void decode(boolean[] instruction) {
+		for (int i = 0; i < 6; i++) { // opcode
+			opcode[i] = instruction[i];
+		}
+		for (int i = 6, j = 0; i < 11; i++, j++) { // rs
+			rs[j] = instruction[i];
+		}
+		for (int i = 11, j = 0; i < 16; i++, j++) { // rt
+			rt[j] = instruction[i];
+		}
+		for (int i = 16, j = 0; i < 21; i++, j++) { // rd
+			rd[j] = instruction[i];
+		}
+		for (int i = 16, j = 0; i < 32; i++, j++) { // address
+			address[j] = instruction[i];
+		}
+		for (int i = 26, j = 0; i < 32; i++) { // funct
+			funct[j] = instruction[i];
+		}
+		for (int i = 21, j = 0; i < 26; i++, j++) { // shamt
+			shamt[j] = instruction[i];
+		}
+	}
+
+	private boolean[] fetch() {
 		return instructionmemory.getInstruction(pcCounter);
 	}
 	
-	@SuppressWarnings("unused")
-	private void execute() {
-		alumux.setS1(registerfiles.readD2Out);
-		alumux.setS2(signextend);
-		alu.setData1(registerfiles.readD1Out);
-		alu.setData2(alumux.getResult(controlUnit.aluSrc));
-		alu.setAluOp(controlUnit.aluOp);
-		aluresult=alu.getResult();
+	public void mipsoperator() {
+		for(int i=0; i<instructionmemory.instructions.size(); i++) {
+			cycle();
+		}
 	}
-	
-	public static void main(String[] args) {
-		Processor s = new Processor();
-		s.pcCounter = 0;
-		s.instructionmemory.setInstruction("add t1 t2 t3");
-		s.cycle();
-		String s = Integer.toBinaryString(-3);
-		System.out.println(s);
-		System.out.println(s.charAt(32-2));
-	}
-}*/
+
+}

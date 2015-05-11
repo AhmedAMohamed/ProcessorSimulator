@@ -13,6 +13,31 @@ public class RegisterFiles {
 	boolean[] readData1;
 	boolean[] readData2;
 	boolean regWrite;
+	
+	public RegisterFiles() {
+		registers = new boolean [32][32];
+		readRegister1 = new boolean [5];
+		readRegister2 = new boolean [5];
+		writeRegister = new boolean [5];
+		writeData = new boolean [32];
+		readData1 = new boolean [32];
+		readData2 = new boolean [32];
+	}
+	
+	public void operate() {
+		int index1 = ALU.binaryArrayToInt(readRegister1);
+		int index2 = ALU.binaryArrayToInt(readRegister2);
+		readData1 = registers[index1];
+		readData2 = registers[index2];
+	}
+	
+	public void updateWriteOperation() {
+		int index = ALU.binaryArrayToInt(writeRegister);
+		if(regWrite) {
+			registers[index] = writeData;
+		}
+	}
+	
 	public boolean[][] getRegisters() {
 		return registers;
 	}
