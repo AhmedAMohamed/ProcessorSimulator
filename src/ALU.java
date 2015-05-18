@@ -12,7 +12,7 @@ public class ALU {
 		aluControl = new boolean[4];
 	}
 
-	public void calculate() {
+	public void calculate(boolean[] shamt) {
 		if(!aluControl[0] && !aluControl[1] && !aluControl[2] && !aluControl[3]) { // and
 			and();
 		}
@@ -29,7 +29,7 @@ public class ALU {
 			slt();
 		}
 		else if(!aluControl[0] && aluControl[1] && !aluControl[2] && aluControl[3]) { // sll
-			sll();
+			sll(shamt);
 		}
 		else if(aluControl[0] && aluControl[1] && !aluControl[2] && !aluControl[3]) { // nor
 			nor();
@@ -46,10 +46,13 @@ public class ALU {
 		}
 	}
 	
-	private void sll() {
+	private void sll(boolean[] shamt) {
 		int in1 = binaryArrayToInt(data1);
-		int in2 = binaryArrayToInt(data2);
+		System.out.println(in1);
+		int in2 = binaryArrayToInt(shamt);
+		System.out.println(in2);
 		int res = (int) (in1*Math.pow(2, in2));
+		System.out.println(res);
 		result = intToBooleanArray(res);
 	}
 

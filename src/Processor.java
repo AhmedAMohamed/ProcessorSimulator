@@ -95,20 +95,21 @@ public class Processor {
 	}
 
 	private void execute() {
-		controlUnit.setAluOp(opcode);
+		
+		controlUnit.setOpcode(opcode);		
 		controlUnit.operate();
-
+		
 		registerfilemux.setA(rt);
 		registerfilemux.setB(rd);
 		registerfilemux.setS(controlUnit.regDest);
 		registerfilemux.operateMux();
 
-		registerfiles.setReadData1(rs);
-		registerfiles.setReadData2(rt);
+		registerfiles.setReadRegister1(rt);
+		registerfiles.setReadRegister2(rs);
 		registerfiles.setWriteRegister(registerfilemux.getResult());
 		registerfiles.setRegWrite(controlUnit.regWrite);
 		registerfiles.operate();
-
+				
 		signextenssion.input = address;
 		signextenssion.extend();
 
@@ -124,7 +125,8 @@ public class Processor {
 		alu.setData1(registerfiles.readData1);
 		alu.setData2(alumux.result);
 		alu.setAluControl(alucontrol.getResult());
-		alu.calculate();
+		alu.calculate(shamt);
+		
 	}
 
 	private void decode(boolean[] instruction) {
@@ -143,7 +145,7 @@ public class Processor {
 		for (int i = 16, j = 0; i < 32; i++, j++) { // address
 			address[j] = instruction[i];
 		}
-		for (int i = 26, j = 0; i < 32; i++) { // funct
+		for (int i = 26, j = 0; i < 32; i++, j++) { // funct
 			funct[j] = instruction[i];
 		}
 		for (int i = 21, j = 0; i < 26; i++, j++) { // shamt

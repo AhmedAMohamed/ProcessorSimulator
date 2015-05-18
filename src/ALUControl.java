@@ -6,7 +6,7 @@ public class ALUControl {
 	
 	public ALUControl() {
 		funct=new boolean[6];
-		AluOp=new boolean[3];
+		AluOp=new boolean[6];
 		result=new boolean[4];
 	}
 	
@@ -31,7 +31,7 @@ public class ALUControl {
 	}
 
 	public void operate() {
-		if(!AluOp[0] && AluOp[1] && !AluOp[2]) { // R formate
+		if(!AluOp[0] && AluOp[1] && !AluOp[2] && !AluOp[3] && !AluOp[4] && !AluOp[5]) { // R formate
 			if(!funct[0] && funct[1] && !funct[2] && !funct[3] && !funct[4] && !funct[5]) { //add
 				result[0]=false;
 				result[1]=false;
@@ -63,6 +63,7 @@ public class ALUControl {
 				result[3]=false;
 			}
 			if(!funct[0] && !funct[1] && !funct[2] && !funct[3] && !funct[4] && !funct[5]) { //sll
+				System.out.println("hhhh");
 				result[0]=false;
 				result[1]=true;
 				result[2]=false;

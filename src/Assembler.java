@@ -164,11 +164,11 @@ public class Assembler {
 			}
 			else if(parts[0].equalsIgnoreCase("sll")) {
 				String rs, rt, rd, shamt, funct, opcode;
-				rd = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1])).replace(' ', '0'));
-				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[2])).replace(' ', '0'));
-				shamt = String.format("%5s", Integer.toBinaryString(Integer.parseInt(parts[3])).replace(' ', '0'));
-				rs = String.format("%5s", Integer.toBinaryString(0).replace(' ', '0'));
-				funct = String.format("%6s", Integer.toBinaryString(0).replace(' ', '0'));
+				rd = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1]))).replace(' ', '0');
+				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[2]))).replace(' ', '0');
+				shamt = String.format("%5s", Integer.toBinaryString(Integer.parseInt(parts[3]))).replace(' ', '0');
+				rs = String.format("%5s", Integer.toBinaryString(0)).replace(' ', '0');
+				funct = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
 				opcode = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
 				for(int i = 0; i < 6; i++) {
 					instruction[i] = opcode.charAt(i) == '1' ? true : false;
@@ -246,8 +246,8 @@ public class Assembler {
 			else if(parts[0].equalsIgnoreCase("addi")) { // I formate
 				// addi t1 t2 value
 				String opcode, rs, rt, address;
-				rs = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[2])).replace(' ', '0'));
-				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1])).replace(' ', '0'));;
+				rs = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[2]))).replace(' ', '0');
+				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1]))).replace(' ', '0');;
 				address = String.format("%16s", Integer.toBinaryString(Integer.parseInt(parts[3]))).replace(' ', '0');
 				opcode = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
 				for(int i = 0; i < 6; i++) {
@@ -345,7 +345,6 @@ public class Assembler {
 			}
 			else if(parts[0].equalsIgnoreCase("sw")) { // I formate
 				// lw $t0 32 $s3
-				System.out.println(instructionsText);
 				String rs, rt, address, opcode;
 				rs = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[3]))).replace(' ', '0');
 				rt = String.format("%5s", Integer.toBinaryString(registerMaper.get(parts[1])).replace(' ', '0'));;
@@ -369,10 +368,13 @@ public class Assembler {
 	}
 	public static void main(String[] args) {
 		Assembler s = new Assembler();
-		s.addInstructions("add $zero $zero $zero");
+		s.addInstructions("addi $v0 $v0 5");
+		
 		s.assemblyGenerator();
+		
 		Processor mips = new Processor();
 		for(int i=0; i<s.instructions.size();i++) {
+			
 			mips.instructionmemory.setInstruction(s.instructions.get(i));
 		}
 		mips.mipsoperator();
