@@ -63,7 +63,6 @@ public class ALUControl {
 				result[3]=false;
 			}
 			if(!funct[0] && !funct[1] && !funct[2] && !funct[3] && !funct[4] && !funct[5]) { //sll
-				System.out.println("hhhh");
 				result[0]=false;
 				result[1]=true;
 				result[2]=false;

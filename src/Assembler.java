@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 
 public class Assembler {
@@ -368,8 +369,14 @@ public class Assembler {
 	}
 	public static void main(String[] args) {
 		Assembler s = new Assembler();
-		s.addInstructions("addi $v0 $v0 5");
 		
+		System.out.println("please insert assembly lines separeted by comma do not press enter tell the end");
+		Scanner in = new Scanner(System.in);
+		String codes = in.nextLine();
+		String[] lines = codes.split(","); // simple way to get inputs
+		for(String line : lines) {
+			s.addInstructions(line);
+		}
 		s.assemblyGenerator();
 		
 		Processor mips = new Processor();
